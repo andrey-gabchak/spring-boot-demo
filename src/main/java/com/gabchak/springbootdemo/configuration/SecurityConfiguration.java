@@ -1,5 +1,6 @@
 package com.gabchak.springbootdemo.configuration;
 
+import com.gabchak.springbootdemo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,23 +15,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final BCryptPasswordEncoder encoder;
+    private final UserService userService;
 
     @Autowired
-    public SecurityConfiguration(BCryptPasswordEncoder encoder) {
+    public SecurityConfiguration(BCryptPasswordEncoder encoder, UserService userService) {
         this.encoder = encoder;
+        this.userService = userService;
     }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-//                .passwordEncoder(encoder)
-                .withUser("user")
-                    .password(encoder.encode("1234"))
-                    .roles("USER")
-                .and()
-                .withUser("admin")
-                    .password(encoder.encode("1234"))
-                    .roles("USER", "ADMIN");
+        auth.userDetailsService(userService)
+                .passwordEncoder(encoder);
     }
 
     @Override

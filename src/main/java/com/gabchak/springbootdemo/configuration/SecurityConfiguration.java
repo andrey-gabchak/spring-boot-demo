@@ -33,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable() //вид атаки
             .authorizeRequests()
-                .antMatchers("/").authenticated()
+                .antMatchers("/**").authenticated()
                 .antMatchers("/admin/*").hasRole("ADMIN")
                 .and()
                 .formLogin()
